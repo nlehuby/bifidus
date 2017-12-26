@@ -31,12 +31,12 @@ map.on('load', function() {
             [
                 "==",
                 "subclass",
-                "bus_stop"
+                "pharmacy"
             ],
             [
                 "==",
                 "class",
-                "bus"
+                "pharmacy"
             ],
         ],
         "layout": {
@@ -63,7 +63,11 @@ map.on('load', function() {
         }
     });
 
-
+    map.loadImage('https://raw.githubusercontent.com/osm-fr/osmose-frontend/master/static/images/markers/marker-b-3010.png', function(error, image) {
+        if (error)
+            throw error;
+        map.addImage('8210', image);
+    });
     map.loadImage('https://raw.githubusercontent.com/osm-fr/osmose-frontend/master/static/images/markers/marker-b-3010.png', function(error, image) {
         if (error)
             throw error;
@@ -81,7 +85,7 @@ map.on('load', function() {
     });
     map.addSource('osmose', {
         "type": 'vector',
-        "tiles": ["https://cors.5apps.com/?uri=http://osmose.openstreetmap.fr/fr/map/issues/{z}/{x}/{y}.mvt?item=8040,1260,2140"],
+        "tiles": ["https://cors.5apps.com/?uri=http://osmose.openstreetmap.fr/fr/map/issues/{z}/{x}/{y}.mvt?item=8210"],
         "attribution": "Osmose",
         "minzoom": 12
     });
