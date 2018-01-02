@@ -2,7 +2,7 @@ var map = new mapboxgl.Map({
     container: 'map',
     style: 'glstyle.json',
     center: [
-        2.4067, 48.7031
+        -0.6039, 44.8306
     ],
     zoom: 14,
     hash: true
@@ -31,12 +31,12 @@ map.on('load', function() {
             [
                 "==",
                 "subclass",
-                "pharmacy"
+                "toilets"
             ],
             [
                 "==",
                 "class",
-                "pharmacy"
+                "toilets"
             ],
         ],
         "layout": {
@@ -45,7 +45,7 @@ map.on('load', function() {
                 "Noto Sans Regular"
             ],
             "text-anchor": "top",
-            "icon-image": "{class}_11",
+            "icon-image": "toilets",
             "icon-allow-overlap": true,
             "text-field": "{name}",
             "text-offset": [
@@ -66,8 +66,14 @@ map.on('load', function() {
     map.loadImage('https://raw.githubusercontent.com/osm-fr/osmose-frontend/master/static/images/markers/marker-b-3010.png', function(error, image) {
         if (error)
             throw error;
-        map.addImage('8210', image);
+        map.addImage('8180', image);
     });
+    map.loadImage('toilets.png', function(error, image) {
+        if (error)
+            throw error;
+        map.addImage('toilets', image);
+    });
+
     map.loadImage('https://raw.githubusercontent.com/osm-fr/osmose-frontend/master/static/images/markers/marker-b-3010.png', function(error, image) {
         if (error)
             throw error;
@@ -85,7 +91,7 @@ map.on('load', function() {
     });
     map.addSource('osmose', {
         "type": 'vector',
-        "tiles": ["https://cors.5apps.com/?uri=http://osmose.openstreetmap.fr/fr/map/issues/{z}/{x}/{y}.mvt?item=8210"],
+        "tiles": ["https://cors.5apps.com/?uri=http://osmose.openstreetmap.fr/fr/map/issues/{z}/{x}/{y}.mvt?item=8180"],
         "attribution": "Osmose",
         "minzoom": 12
     });
