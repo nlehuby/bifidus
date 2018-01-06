@@ -1,9 +1,7 @@
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'glstyle.json',
-    center: [
-        -0.6039, 44.8306
-    ],
+    center: [-0.6039, 44.8306],
     zoom: 14,
     hash: true
 });
@@ -14,6 +12,24 @@ map.addControl(new mapboxgl.GeolocateControl({
     },
     trackUserLocation: true
 }));
+
+var poi_config = {}
+poi_config['toilets'] = {
+    'subclass': 'toilets',
+    'class': 'toilets',
+    'icon_url' : 'toilets.png',
+    'icon_name': 'toilets',
+    'osmose_class_item':'8180'
+}
+
+poi_config['pharmacy'] = {
+    'subclass': 'pharmacy',
+    'class': 'pharmacy',
+    'icon_name': 'pharmacy_11',
+    'osmose_class_item':'8210'
+}
+
+var used_poi_config = poi_config['toilets'];
 
 map.on('load', function() {
 
@@ -31,12 +47,12 @@ map.on('load', function() {
             [
                 "==",
                 "subclass",
-                "toilets"
+                used_poi_config['subclass']
             ],
             [
                 "==",
                 "class",
-                "toilets"
+                used_poi_config['class']
             ],
         ],
         "layout": {
@@ -45,7 +61,7 @@ map.on('load', function() {
                 "Noto Sans Regular"
             ],
             "text-anchor": "top",
-            "icon-image": "toilets",
+            "icon-image": used_poi_config['icon_name'],
             "icon-allow-overlap": true,
             "text-field": "{name}",
             "text-offset": [
@@ -63,50 +79,28 @@ map.on('load', function() {
         }
     });
 
-    map.loadImage('https://raw.githubusercontent.com/osm-fr/osmose-frontend/master/static/images/markers/marker-b-3010.png', function(error, image) {
-        if (error)
-            throw error;
-        map.addImage('8180', image);
-    });
-    map.loadImage('toilets.png', function(error, image) {
-        if (error)
-            throw error;
-        map.addImage('toilets', image);
-    });
+    if (used_poi_config['icon_url']) {
+        map.loadImage(used_poi_config['icon_url'], function(error, image) {
+            if (error)
+                throw error;
+            map.addImage(used_poi_config['icon_name'], image);
+        });
+    }
 
-    map.loadImage('https://raw.githubusercontent.com/osm-fr/osmose-frontend/master/static/images/markers/marker-b-3010.png', function(error, image) {
-        if (error)
-            throw error;
-        map.addImage('8040', image);
-    });
-    map.loadImage('https://raw.githubusercontent.com/osm-fr/osmose-frontend/master/static/images/markers/marker-b-0.png', function(error, image) {
-        if (error)
-            throw error;
-        map.addImage('2140', image);
-    });
-    map.loadImage('https://raw.githubusercontent.com/osm-fr/osmose-frontend/master/static/images/markers/marker-b-5010.png', function(error, image) {
-        if (error)
-            throw error;
-        map.addImage('1260', image);
-    });
     map.addSource('osmose', {
         "type": 'vector',
-        "tiles": ["https://cors.5apps.com/?uri=http://osmose.openstreetmap.fr/fr/map/issues/{z}/{x}/{y}.mvt?item=8180"],
+        "tiles": ["https://cors.5apps.com/?uri=http://osmose.openstreetmap.fr/fr/map/issues/{z}/{x}/{y}.mvt?item=" + used_poi_config['osmose_class_item'] ],
         "attribution": "Osmose",
         "minzoom": 12
     });
 
     map.addLayer({
         "id": "issues_",
-        "type": "symbol",
+        "type": "circle",
         "source": "osmose",
         "source-layer": "issues",
-        /*"filter": [
-            "==", "item", 8040
-        ],*/
-        "layout": {
-            "icon-image": "{item}",
-            "icon-anchor": "bottom"
+        "paint": {
+            "circle-color": "hsl(0, 81%, 54%)"
         }
     });
 
@@ -141,19 +135,12 @@ map.on('load', function() {
             var osmose_url = "https://cors.5apps.com/?uri=http://osmose.openstreetmap.fr/fr/api/0.2/error/" + e.features[0].properties.issue_id
             var osmose_response = await fetch(osmose_url);
             var osmose_data = await osmose_response.json();
-            if (item_id == 8040) {
-                var popup_content = "<b>Cet arrêt semble manquant</b> <br/>"
-                popup_content += osmose_data['subtitle']
-                var mapcontrib_url = 'https://www.cartes.xyz/t/e7200d-Arrets_de_bus#position/18/' + e.features[0].geometry.coordinates[1] + '/' + e.features[0].geometry.coordinates[0];
+
+            var popup_content = "<b>" + osmose_data['title'] + "</b><br/>"
+            popup_content += osmose_data['subtitle']
+            if (used_poi_config['mapcontrib']){
+                var mapcontrib_url = used_poi_config['mapcontrib'] + "#position/18/" + e.features[0].geometry.coordinates[1] + '/' + e.features[0].geometry.coordinates[0];
                 popup_content += "<br><a target='blank_' href='" + mapcontrib_url + "'>Voir sur MapContrib</a>"
-            } else {
-                var popup_content = "<b>" + osmose_data['title'] + "</b><br/>"
-                popup_content += osmose_data['subtitle']
-                for (elem_id in osmose_data['elems']) {
-                    elem = osmose_data['elems'][elem_id]
-                    var osm_url = 'http://osm.org/' + elem['type'] + '/' + elem['id'];
-                    popup_content += "<br><a target='blank_' href='" + osm_url + "'>Voir sur OSM</a>"
-                }
             }
 
             popup.style.display = 'block';
