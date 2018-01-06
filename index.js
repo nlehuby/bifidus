@@ -19,7 +19,8 @@ poi_config['toilets'] = {
     'class': 'toilets',
     'icon_url' : 'toilets.png',
     'icon_name': 'toilets',
-    'osmose_class_item':'8180'
+    'osmose_class_item':'8180',
+    'mapcontrib' : 'https://www.cartes.xyz/t/b607fa-Toilettes#'
 }
 
 poi_config['pharmacy'] = {
