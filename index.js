@@ -100,7 +100,33 @@ map.on('load', function() {
         "source": "osmose",
         "source-layer": "issues",
         "paint": {
-            "circle-color": "hsl(0, 81%, 54%)"
+            "circle-color": "hsl(0, 81%, 54%)",
+            "circle-radius": {
+                "base": 1,
+                "stops": [
+                    [
+                        12,
+                        12
+                    ],
+                    [
+                        18,
+                        8
+                    ]
+                ]
+            },
+            "circle-blur": {
+                "base": 1,
+                "stops": [
+                    [
+                        12,
+                        1
+                    ],
+                    [
+                        18,
+                        0
+                    ]
+                ]
+            }
         }
     });
 
